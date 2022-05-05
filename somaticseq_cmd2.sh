@@ -22,9 +22,12 @@ makeAlignmentScripts.py \
 --in-fastq1s       /volume/cyvolume/somaticseq/fastq/SRR13076390_1.fastq \
 --in-fastq2s       /volume/cyvolume/somaticseq/fastq/SRR13076390_2.fastq \
 --genome-reference /volume/cyvolume/somaticseq/human_g1k_v37_decoy.fasta \
+--out-fastq1-name  Reads_Merged_R1.fq.gz \
+--out-fastq2-name  Reads_Merged_R2.fq.gz \
 --out-bam          SRR13076390.trimmed.aligned.marked_dup.bam \
 --bam-header       '@RG\tID:$group\tSM:$sample\tPL:$platform' \
 --run-trimming  \
 --run-alignment \
---run-mark-duplicates --parallelize-markdup \
+--run-mark-duplicates \
+--parallelize-markdup \
 --run-workflow

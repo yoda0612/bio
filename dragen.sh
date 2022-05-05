@@ -9,7 +9,7 @@ fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq
 somatic_RGSM="SM_"${SampleName}
 somatic_RGID="GP_"${SampleName}
 
-dragen -r ${somatic_ref_dir} \
+nohup dragen -r ${somatic_ref_dir} \
 --output-dir ${somatic_output_dir} \
 --output-file-prefix ${somatic_output_prefix} \
 --output-format BAM \
@@ -24,11 +24,11 @@ dragen -r ${somatic_ref_dir} \
 --RGID-tumor ${somatic_RGID} \
 --RGSM-tumor ${somatic_RGSM} \
 --enable-variant-caller true \
---enable-map-align true
+--enable-map-align true &
 
 dragen --build-hash-table true \
--ht-reference <reference.fasta> --output-
-directory <outdir>
+--ht-reference $fasta \
+--output-directory $somatic_ref_dir
 
 # --enable-sv true \
 # --enable-hla true \

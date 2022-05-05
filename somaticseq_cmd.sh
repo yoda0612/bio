@@ -35,7 +35,7 @@ java  -Xmx40g -jar /opt/ohpc/Taiwania3/pkg/biology/Picard/picard_v2.26.0/picard.
 
 #I did not explicitly incorporate TNscope into the single mode. But in the latest version, there is a way to use the result of any additional caller, i.e., --arbitrary-snvs and --arbitrary-indels.
 #First, you'll need to separate the snvs and indels by doing
-splitVcf.py -infile TNscope.vcf.gz -snv tnscope_snvs.vcf -indel tnscope_indels.vcf.
+splitVcf.py -infile MuTect2.selected.vcf -snv MuTect2_snvs.vcf -indel MuTect2_indels.vcf
 
 
 docker run -v /home/ubuntu/somaticseq:/home/ubuntu/somaticseq \
@@ -102,7 +102,7 @@ docker run -v /home/ubuntu/somaticseq:/home/ubuntu/somaticseq \
   -Q 1 -c 1 -S 2 -E 3 -g 4 /volume/cyvolume/somaticseq/output/split_regions.bed \
   > /volume/cyvolume/somaticseq/output/SRR13076391.vardict.var
 
-  cat /volume/cyvolume/somaticseq/output/SRR13076391.vardict.var | awk 'NR!=1' | /opt/VarDict/teststrandbias.R | /opt/VarDict/var2vcf_valid.pl -N 'TUMOR' -f 0.05 > /volume/cyvolume/somaticseq/output/vardict/SRR13076391.VarDict.vcf
+  cat /volume/cyvolume/somaticseq/output/SRR13076391.vardict.var | awk 'NR!=1' | /opt/VarDict/teststrandbias.R | /opt/VarDict/var2vcf_valid.pl -N 'TUMOR' -f 0.05 > /volume/cyvolume/somaticseq/output/SRR13076391.VarDict.vcf
 
 ## output
   /opt/somaticseq/somaticseq/run_somaticseq.py \
@@ -110,17 +110,17 @@ docker run -v /home/ubuntu/somaticseq:/home/ubuntu/somaticseq \
   --genome-reference /volume/cyvolume/somaticseq/human_g1k_v37_decoy.fasta \
   --inclusion-region /volume/cyvolume/somaticseq/CTR_hg19.b37.bed \
   --dbsnp-vcf /volume/cyvolume/somaticseq/dbsnp_138.b37.vcf \
-  --classifier-snv /volume/cyvolume/somaticseq/output/SomaticSeq/Ensemble.sSNV.tsv.xgb.v3.7.1.classifier \
-  --classifier-indel /volume/cyvolume/somaticseq/output/SomaticSeq/Ensemble.sINDEL.tsv.xgb.v3.7.1.classifier \
+  --classifier-snv /volume/cyvolume/somaticseq/output/SomaticSeq/classifier/Ensemble.sSNV.tsv.xgb.v3.7.1.classifier \
+  --classifier-indel /volume/cyvolume/somaticseq/output/SomaticSeq/classifier/Ensemble.sINDEL.tsv.xgb.v3.7.1.classifier \
   --algorithm xgboost \
   single \
-  --bam-file  /volume/cyvolume/somaticseq/SRR13076390.realigned.bam \
-  --mutect2-vcf /volume/cyvolume/somaticseq/output/MuTect2.vcf \
-  --vardict-vcf /volume/cyvolume/somaticseq/output/VarDict.vcf \
-  --strelka-vcf /volume/cyvolume/somaticseq/output/Strelka/results/variants/variants.vcf.gz \
+  --bam-file  /volume/cyvolume/somaticseq/SRR13076391.realigned.bam \
+  --mutect2-vcf /volume/cyvolume/somaticseq/output/SRR13076391.MuTect2.vcf \
+  --vardict-vcf /volume/cyvolume/somaticseq/output/SRR13076391.VarDict.vcf \
+  --strelka-vcf /volume/cyvolume/somaticseq/output/Strelka1/results/variants/variants.vcf.gz \
   --arbitrary-snvs /volume/cyvolume/somaticseq/output/tnscope_snvs.vcf /volume/cyvolume/somaticseq/output/dragen_snvs.vcf \
   --arbitrary-indels /volume/cyvolume/somaticseq/output/tnscope_indels.vcf /volume/cyvolume/somaticseq/output/dragen_indels.vcf \
-  --lofreq-vcf /volume/cyvolume/somaticseq/output/LoFreq.vcf
+  --lofreq-vcf /volume/cyvolume/somaticseq/output/SRR13076391.LoFreq.vcf
 
 # train
 /opt/somaticseq/somaticseq/run_somaticseq.py \
