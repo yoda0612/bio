@@ -19,8 +19,8 @@ gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
 # $gatk --java-options "-Xmx40g" Mutect2 -I $input_bam -O $output_vcf -R $fasta
 
 SampleName=SRR13076390
-input_bam=/staging/biology/yoda670612/bam_b37_2/SRR13076390.realigned.bam
-output_vcf=/staging/biology/yoda670612/MuTect2_test/$SampleName.Mutect2.all3.vcf
+input_bam=/staging/biology/yoda670612/run13_dragen_mutect2/dragen_tumor.bam
+output_vcf=/staging/biology/yoda670612/run13_dragen_mutect2/dragen_mutect2.vcf
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
 echo "$gatk Mutect2 -I $input_bam -O $output_vcf -R $fasta --min-base-quality-score 1"
 $gatk --java-options "-Xmx180g" Mutect2 -I $input_bam -O $output_vcf -R $fasta \
