@@ -13,19 +13,28 @@ set -euo pipefail
 
 export SENTIEON_LICENSE=140.110.16.119:8990
 
-SampleName="Merge"
+SampleName="Merged"
 
 sample="SM_"${SampleName}
 group="GP_"${SampleName}
 platform="ILLUMINA"
 
 SENTIEON_INSTALL_DIR="/staging/reserve/paylong_ntu/AI_SHARE/software/Sentieon/sentieon-genomics-202112"
+gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
+
 nt=40 #number of threads to use in computation
-#fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
+workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
-fastq_1=/staging/biology/yoda670612/Merged1.fastq
-fastq_2=/staging/biology/yoda670612/Merged2.fastq
-sorted_bam=/staging/biology/yoda670612/Merged.bam
+fastq_1=$workdir/${SampleName}1.fastq
+fastq_2=$workdir/${SampleName}2.fastq
+sorted_bam=$workdir/${SampleName}.sorted.bam
+deduped_bam=$workdir/${SampleName}.deduped.bam
+score_info=$workdir/${SampleName}.score.txt
+dedup_metrics=$workdir/${SampleName}.dedup_metrics.txt
+realigned_bam=$workdir/${SampleName}.realigned.bam
+recal_data=$workdir/${SampleName}.recal_data.table
+vcf=$workdir/${SampleName}.b37.TNscope.vcf
+vcf_mu2=$workdir/${SampleName}.b37.Mutect2.vcf
 
 # Update with the location of the reference data files
 
@@ -82,20 +91,20 @@ printf "########################################################################
 # to mark instead of remove duplicates
 # by ommiting the --rmdup option in Dedup
 # ******************************************
-# $SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i ${SampleName}.sorted.bam --algo LocusCollector --fun score_info ${SampleName}.score.txt
-# $SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i ${SampleName}.sorted.bam --algo Dedup --rmdup --score_info ${SampleName}.score.txt --metrics ${SampleName}.dedup_metrics.txt ${SampleName}.deduped.bam
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo LocusCollector --fun score_info $score_info
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo Dedup --rmdup --score_info $score_info --metrics $dedup_metrics $deduped_bam
 
 
 # ******************************************
 # 4. Indel realigner
 # ******************************************
-# $SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta  -t $nt -i ${SampleName}.deduped.bam --algo Realigner -k $known_Mills_indels -k $known_1000G_indels ${SampleName}.realigned.bam
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta  -t $nt -i $deduped_bam --algo Realigner -k $known_Mills_indels -k $known_1000G_indels $realigned_bam
 
 
 # ******************************************
 # 5. Base recalibration
 # ******************************************
-# $SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam --algo QualCal -k $dbsnp -k $known_Mills_indels -k $known_1000G_indels ${SampleName}.recal_data.table
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i $realigned_bam --algo QualCal -k $dbsnp -k $known_Mills_indels -k $known_1000G_indels $recal_data
 #$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i deduped.bam -q recal_data.table --algo QualCal -k $dbsnp -k $known_Mills_indels -k $known_1000G_indels recal_data.table.post
 #$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt --algo QualCal --plot --before recal_data.table --after recal_data.table.post recal.csv
 #$SENTIEON_INSTALL_DIR/bin/sentieon plot QualCal -o recal_plots.pdf recal.csv
@@ -103,4 +112,7 @@ printf "########################################################################
 
 ### TNscope calling
 # echo "$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam -q ${SampleName}.recal_data.table --algo TNscope --tumor_sample $sample --dbsnp $dbsnp ${SampleName}.b37.TNscope.vcf"
-# $SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam -q ${SampleName}.recal_data.table --algo TNscope --tumor_sample $sample --dbsnp $dbsnp ${SampleName}.b37.TNscope.vcf
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i $realigned_bam -q $recal_data --algo TNscope --tumor_sample $sample --dbsnp $dbsnp $vcf
+
+
+$gatk --java-options "-Xmx60g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta
