@@ -9,5 +9,4 @@
 #SBATCH --mail-user=cycheng1978@g.ntu.edu.tw
 #SBATCH --mail-type=FAIL
 
-cat SRR13076390_1.fastq SRR13076391_1.fastq SRR13076392_1.fastq SRR13076393_1.fastq SRR13076394_1.fastq SRR13076395_1.fastq SRR13076396_1.fastq SRR13076397_1.fastq | gzip > Merged1.fastq.gz
-cat SRR13076390_2.fastq SRR13076391_2.fastq SRR13076392_2.fastq SRR13076393_2.fastq SRR13076394_2.fastq SRR13076395_2.fastq SRR13076396_2.fastq SRR13076397_2.fastq | gzip > Merged2.fastq.gz
+/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2/strelka/runWorkflow.py -m local -j 100 -g 80

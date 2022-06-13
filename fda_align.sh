@@ -113,6 +113,4 @@ printf "########################################################################
 ### TNscope calling
 # echo "$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam -q ${SampleName}.recal_data.table --algo TNscope --tumor_sample $sample --dbsnp $dbsnp ${SampleName}.b37.TNscope.vcf"
 #$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i $realigned_bam -q $recal_data --algo TNscope --tumor_sample $sample --dbsnp $dbsnp $vcf
-
-
-$gatk --java-options "-Xmx40g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta
+#$gatk --java-options "-Xmx40g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta

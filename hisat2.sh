@@ -26,11 +26,12 @@ hisat2_build=/work/yoda670612/hisat2-2.1.0/hisat2-build
 
 nt=40 #number of threads to use in computation
 workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2
+fastqdir=/staging/biology/yoda670612
 sam=$workdir/${SampleName}.hisat2.sam
 fastadir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2/fastq
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2/fastq/human_g1k_v37_decoy.fasta
-fastq_1=$workdir/${SampleName}1.fastq
-fastq_2=$workdir/${SampleName}2.fastq
+fastq_1=$fastqdir/${SampleName}1.fastq
+fastq_2=$fastqdir/${SampleName}2.fastq
 sorted_bam=$workdir/${SampleName}.sorted.bam
 deduped_bam=$workdir/${SampleName}.deduped.bam
 score_info=$workdir/${SampleName}.score.txt

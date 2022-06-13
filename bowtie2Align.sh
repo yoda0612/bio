@@ -23,14 +23,18 @@ SENTIEON_INSTALL_DIR="/staging/reserve/paylong_ntu/AI_SHARE/software/Sentieon/se
 gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
 bowtie2=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2
 bowtie2_build=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2-build
+SAMTOOLS=/opt/ohpc/Taiwania3/pkg/biology/SAMTOOLS/SAMTOOLS_v1.13/bin/samtools
 
 nt=40 #number of threads to use in computation
+fastqdir=/staging/biology/yoda670612
 workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2
 fastadir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2/fastq
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
-fastq_1=$workdir/${SampleName}1.fastq
-fastq_2=$workdir/${SampleName}2.fastq
-sam=$workdir/${SampleName}.bowtie2.sam
+fastq_1=$fastqdir/${SampleName}1.fastq
+fastq_2=$fastqdir/${SampleName}2.fastq
+sam=$fastqdir/${SampleName}.bowtie2.sam
+bam=$workdir/${SampleName}.bowtie2.bam
+
 sorted_bam=$workdir/${SampleName}.sorted.bam
 deduped_bam=$workdir/${SampleName}.deduped.bam
 score_info=$workdir/${SampleName}.score.txt
@@ -49,4 +53,7 @@ known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/
 
 #$bowtie2_build $fasta $fastadir/human_g1k_v37_decoy
 echo "$bowtie2 -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam"
-$bowtie2 -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam
+$bowtie2 -p $nt --rg-id $group --rg "SM:$sample" --rg "PL:$platform" -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam
+
+echo "$SAMTOOLS view -bS $sam > $bam"
+$SAMTOOLS view -bS $sam > $bam

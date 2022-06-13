@@ -22,3 +22,16 @@ do
       # python b37tohg19.py $workdir/$sample.b37.TNscope.vcf $workdir/$sample.hg19.TNscope.vcf
   done
 done
+
+for i in {0..8};
+do
+
+job_name="f"${i}
+p=ngs12G
+c=3
+mem=12G
+sbatch -A MST109178 -J $job_name  -p $p -c $c --mem=$mem -o %j.out -e %j.log \
+--mail-user=cycheng1978@g.ntu.edu.tw --mail-type=FAIL,END \
+--wrap="gzip SRR1307639${i}_1.fastq"
+
+done
