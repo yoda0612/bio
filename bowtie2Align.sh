@@ -34,6 +34,7 @@ fastq_1=$fastqdir/${SampleName}1.fastq
 fastq_2=$fastqdir/${SampleName}2.fastq
 sam=$fastqdir/${SampleName}.bowtie2.sam
 bam=$workdir/${SampleName}.bowtie2.bam
+sorted_bam=$workdir/${SampleName}.bowtie2.sorted.bam
 
 sorted_bam=$workdir/${SampleName}.sorted.bam
 deduped_bam=$workdir/${SampleName}.deduped.bam
@@ -52,8 +53,11 @@ known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/
 
 
 #$bowtie2_build $fasta $fastadir/human_g1k_v37_decoy
-echo "$bowtie2 -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam"
-$bowtie2 -p $nt --rg-id $group --rg "SM:$sample" --rg "PL:$platform" -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam
+# echo "$bowtie2 -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam"
+# $bowtie2 -p $nt --rg-id $group --rg "SM:$sample" --rg "PL:$platform" -x $fastadir/human_g1k_v37_decoy -1 $fastq_1 -2 $fastq_2 -S $sam
+#
+# echo "$SAMTOOLS view -bS $sam > $bam"
+# $SAMTOOLS view -bS $sam > $bam
 
-echo "$SAMTOOLS view -bS $sam > $bam"
-$SAMTOOLS view -bS $sam > $bam
+echo "$SAMTOOLS sort $bam -o $sorted_bam"
+$SAMTOOLS sort $bam -o $sorted_bam

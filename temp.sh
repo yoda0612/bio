@@ -54,10 +54,10 @@ runDir=$workdir/strelka
 
 
 #懶惰用
-job_name="f2gz1"
-p=ngs12G
-c=3
-mem=12G
+job_name="mfas1"
+p=ngs192G
+c=56
+mem=184G
 sbatch -A MST109178 -J $job_name  -p $p -c $c --mem=$mem -o %j.out -e %j.log \
 --mail-user=cycheng1978@g.ntu.edu.tw --mail-type=FAIL,END \
---wrap="gzip SRR13076390_1.fastq"
+--wrap="gzip Merged1.fastq"

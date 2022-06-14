@@ -23,9 +23,8 @@ do
   done
 done
 
-for i in {0..8};
+for i in {3..8};
 do
-
 job_name="f"${i}
 p=ngs12G
 c=3
