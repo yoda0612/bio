@@ -1,13 +1,22 @@
+Alinger=bwa
 SampleName=SRR13076390
 somatic_ref_dir=/staging/yoda670612/ref
-somatic_output_dir=/staging/yoda670612/output
-somatic_output_prefix="dragen"
+somatic_output_dir=/staging/yoda670612/output/${Alinger}
+somatic_output_prefix=${SampleName}.${Alinger}
 fasta=${somatic_ref_dir}/human_g1k_v37_decoy.fasta
 fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq
 fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq
-
+bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.realigned.bam
 somatic_RGSM="SM_"${SampleName}
 somatic_RGID="GP_"${SampleName}
+mkdir $somatic_output_dir
+
+nohup dragen -r ${somatic_ref_dir} \
+--output-dir ${somatic_output_dir} \
+--output-file-prefix ${somatic_output_prefix} \
+-b $bam \
+--enable-variant-caller true  &
+
 
 nohup dragen -r ${somatic_ref_dir} \
 --output-dir ${somatic_output_dir} \
@@ -23,6 +32,23 @@ nohup dragen -r ${somatic_ref_dir} \
 --tumor-fastq2 ${fastq_2} \
 --RGID-tumor ${somatic_RGID} \
 --RGSM-tumor ${somatic_RGSM} \
+--enable-variant-caller true \
+--enable-map-align true &
+
+nohup dragen -r ${somatic_ref_dir} \
+--output-dir ${somatic_output_dir} \
+--output-file-prefix ${somatic_output_prefix} \
+--output-format BAM \
+--enable-map-align-output true \
+--vc-emit-ref-confidence GVCF \
+--vc-enable-vcf-output true \
+--repeat-genotype-enable true \
+--enable-duplicate-marking true \
+--remove-duplicates true \
+-1 ${fastq_1}  \
+-2 ${fastq_2} \
+--RGID ${somatic_RGID} \
+--RGSM ${somatic_RGSM} \
 --enable-variant-caller true \
 --enable-map-align true &
 

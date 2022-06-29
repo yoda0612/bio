@@ -14,20 +14,11 @@ python=/work/yoda670612/anaconda2/bin/python2
 hap=/home/yoda670612/hap.py-build/bin/hap.py
 truth_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.b37.vcf
 bed=/staging/biology/yoda670612/truth/CTR_hg19.b37.bed
-SampleName=$1
+SampleName=SRR13076390
 
-# input_vcf=/staging/biology/yoda670612/run8_dragen/$SampleName.SomaticSeq.vcf
-# output_prefix=/staging/biology/yoda670612/run8_dragen/$SampleName.SomaticSeq
+input_vcf=/staging/biology/yoda670612/plan/$SampleName.dragen.hard-filtered.vcf.gz
+output_prefix=/staging/biology/yoda670612/plan/hap/$SampleName.dragen.hard-filtered.hap
 
-input_vcf=/staging/biology/yoda670612/run12_somaticseq/SSeq.Classified.sSNV.vcf.gz
-output_prefix=/staging/biology/yoda670612/run12_somaticseq/SSeq.Classified.sSNV.hap
-
-echo "$python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta"
-$python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta
-
-truth_vcf=/home/yoda670612/somaticseq_example/Varsim.somatic.truth.vcf.gz
-input_vcf=/home/yoda670612/somaticseq_example/megred.vcf
-output_prefix=/home/yoda670612/somaticseq_example/megred.hap
 
 echo "$python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta"
 $python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta

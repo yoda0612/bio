@@ -10,7 +10,7 @@
   /opt/deepvariant/bin/run_deepvariant \
     --model_type=WES \
     --ref=/volume/cyvolume/somaticseq/human_g1k_v37_decoy.fasta \
-    --reads=/volume/cyvolume/Merged.realigned.bam \
-    --output_vcf=/volume/cyvolume/deepvariant/vcf/Merged.deepvariant.vcf.gz \
-    --output_gvcf=/volume/cyvolume/deepvariant/vcf/Merged.deepvariant.g.vcf.gz \
-    --num_shards=4
+    --reads=/volume/cyvolume/SRR13076390.dragmap.realigned.bam \
+    --output_vcf=/volume/cyvolume/deepvariant/vcf/SRR13076390.dragmap.deepvariant.vcf.gz \
+    --output_gvcf=/volume/cyvolume/deepvariant/vcf/SRR13076390.dragmap.deepvariant.g.vcf.gz \
+    --num_shards=40

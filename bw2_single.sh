@@ -13,7 +13,7 @@ set -euo pipefail
 
 export SENTIEON_LICENSE=140.110.16.119:8990
 
-SampleName="Merged"
+SampleName="SRR13076390"
 
 sample="SM_"${SampleName}
 group="GP_"${SampleName}
@@ -27,22 +27,22 @@ SAMTOOLS=/opt/ohpc/Taiwania3/pkg/biology/SAMTOOLS/SAMTOOLS_v1.13/bin/samtools
 
 nt=40 #number of threads to use in computation
 fastqdir=/staging/biology/yoda670612
-workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2
+workdir=/staging/biology/yoda670612/plan
 fastadir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/seq2/fastq
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
-fastq_1=$fastqdir/${SampleName}1.fastq
-fastq_2=$fastqdir/${SampleName}2.fastq
-sam=$fastqdir/${SampleName}.bowtie2.sam
+fastq_1=$fastqdir/${SampleName}_1.fastq.gz
+fastq_2=$fastqdir/${SampleName}_2.fastq.gz
+sam=$workdir/${SampleName}.bowtie2.sam
 bam=$workdir/${SampleName}.bowtie2.bam
 
-sorted_bam=$fastqdir/${SampleName}.bowtie2.sorted.bam
-deduped_bam=$fastqdir/${SampleName}.bowtie2.deduped.bam
-score_info=$fastqdir/${SampleName}.bowtie2.score.txt
-dedup_metrics=$fastqdir/${SampleName}.bowtie2.dedup_metrics.txt
-realigned_bam=$fastqdir/${SampleName}.bowtie2.realigned.bam
-recal_data=$fastqdir/${SampleName}.rbowtie2.ecal_data.table
-vcf=$fastqdir/${SampleName}.bowtie2.b37.TNscope.vcf
-vcf_mu2=$fastqdir/${SampleName}.bowtie2.b37.Mutect2.vcf
+sorted_bam=$workdir/${SampleName}.bowtie2.sorted.bam
+deduped_bam=$workdir/${SampleName}.bowtie2.deduped.bam
+score_info=$workdir/${SampleName}.bowtie2.score.txt
+dedup_metrics=$workdir/${SampleName}.bowtie2.dedup_metrics.txt
+realigned_bam=$workdir/${SampleName}.bowtie2.realigned.bam
+recal_data=$workdir/${SampleName}.rbowtie2.ecal_data.table
+vcf=$workdir/${SampleName}.bowtie2.b37.TNscope.vcf
+vcf_mu2=$workdir/${SampleName}.bowtie2.b37.Mutect2.vcf
 
 # Update with the location of the reference data files
 
@@ -57,12 +57,15 @@ known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/
 #
 # echo "$SAMTOOLS view -bS $sam > $bam"
 # $SAMTOOLS view -bS $sam > $bam
-
+#
 # echo "$SAMTOOLS sort $bam -o $sorted_bam"
 # $SAMTOOLS sort $bam -o $sorted_bam
 
+echo "$SAMTOOLS index $sorted_bam"
+$SAMTOOLS index $sorted_bam
+
 #sort
-$SENTIEON_INSTALL_DIR/bin/sentieon util sort -r $fasta -i $bam -o $sorted_bam -t $nt
+#$SENTIEON_INSTALL_DIR/bin/sentieon util sort -r $fasta -i $bam -o $sorted_bam -t $nt
 $SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo LocusCollector --fun score_info $score_info
 $SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo Dedup --rmdup --score_info $score_info --metrics $dedup_metrics $deduped_bam
 
