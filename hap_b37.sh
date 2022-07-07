@@ -13,12 +13,13 @@ fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_
 python=/work/yoda670612/anaconda2/bin/python2
 hap=/home/yoda670612/hap.py-build/bin/hap.py
 truth_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.b37.vcf
-bed=/staging/biology/yoda670612/truth/CTR_hg19.b37.bed
+#bed=/staging/biology/yoda670612/truth/CTR_hg19.b37.bed
+bed=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/PanelA.b37.bed
+
 SampleName=SRR13076390
 
-input_vcf=/staging/biology/yoda670612/plan/$SampleName.dragen.hard-filtered.vcf.gz
-output_prefix=/staging/biology/yoda670612/plan/hap/$SampleName.dragen.hard-filtered.hap
-
+input_vcf=/staging/biology/yoda670612/plan/$SampleName.dragmap.b37.Mutect2.vcf
+output_prefix=/staging/biology/yoda670612/plan/hap/$SampleName.dragmap.b37.Mutect2.PanelA.hap
 
 echo "$python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta"
 $python $hap $truth_vcf $input_vcf -f $bed -o $output_prefix -r $fasta

@@ -1,4 +1,4 @@
-Alinger=bwa
+Alinger=dragen
 SampleName=SRR13076390
 somatic_ref_dir=/staging/yoda670612/ref
 somatic_output_dir=/staging/yoda670612/output/${Alinger}

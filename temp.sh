@@ -56,7 +56,7 @@ runDir=$workdir/strelka
 
 
 #懶惰用
-job_name="bw2sk"
+job_name="hu2sk"
 p=ngs192G
 c=56
 mem=184G

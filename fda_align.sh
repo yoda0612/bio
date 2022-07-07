@@ -18,7 +18,7 @@ SampleName=$1
 sample="SM_"${SampleName}
 group="GP_"${SampleName}
 platform="ILLUMINA"
-
+aligner="dragmap"
 SENTIEON_INSTALL_DIR="/staging/reserve/paylong_ntu/AI_SHARE/software/Sentieon/sentieon-genomics-202112"
 gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
 
@@ -27,14 +27,15 @@ workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
 fastq_1=$workdir/${SampleName}_R1.fastq.gz
 fastq_2=$workdir/${SampleName}_R2.fastq.gz
-sorted_bam=$workdir/${SampleName}.sorted.bam
-deduped_bam=$workdir/${SampleName}.deduped.bam
-score_info=$workdir/${SampleName}.score.txt
-dedup_metrics=$workdir/${SampleName}.dedup_metrics.txt
-realigned_bam=$workdir/${SampleName}.realigned.bam
-recal_data=$workdir/${SampleName}.recal_data.table
-vcf=$workdir/${SampleName}.b37.TNscope.vcf
-vcf_mu2=$workdir/${SampleName}.b37.Mutect2.vcf
+sam=$workdir/${SampleName}.${aligner}.sam
+sorted_bam=$workdir/${SampleName}.${aligner}.sorted.bam
+deduped_bam=$workdir/${SampleName}.${aligner}.deduped.bam
+score_info=$workdir/${SampleName}.${aligner}.score.txt
+dedup_metrics=$workdir/${SampleName}.${aligner}.dedup_metrics.txt
+realigned_bam=$workdir/${SampleName}.${aligner}.realigned.bam
+recal_data=$workdir/${SampleName}.${aligner}.recal_data.table
+vcf=$workdir/${SampleName}.${aligner}.b37.TNscope.vcf
+vcf_mu2=$workdir/${SampleName}.${aligner}.b37.Mutect2.vcf
 
 # Update with the location of the reference data files
 
@@ -75,8 +76,10 @@ printf "########################################################################
 # 1. Mapping reads with BWA-MEM, sorting
 # ******************************************
 #The results of this call are dependent on the number of threads used. To have number of threads independent results, add chunk size option -K 10000000
-#( $SENTIEON_INSTALL_DIR/bin/sentieon bwa mem -R "@RG\tID:$group\tSM:$sample\tPL:$platform" -t $nt -K 10000000 $fasta $fastq_1 $fastq_2 || echo -n 'error' ) | $SENTIEON_INSTALL_DIR/bin/sentieon util sort -r $fasta -o $sorted_bam -t $nt --sam2bam -i -
+cat $sam | $SENTIEON_INSTALL_DIR/bin/sentieon util sort -r $fasta -o $sorted_bam -t $nt --sam2bam -i -
 
+
+#用不到
 # ******************************************
 # 2. Metrics
 # ******************************************
@@ -91,14 +94,14 @@ printf "########################################################################
 # to mark instead of remove duplicates
 # by ommiting the --rmdup option in Dedup
 # ******************************************
-#$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo LocusCollector --fun score_info $score_info
-#$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo Dedup --rmdup --score_info $score_info --metrics $dedup_metrics $deduped_bam
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo LocusCollector --fun score_info $score_info
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -t $nt -i $sorted_bam --algo Dedup --rmdup --score_info $score_info --metrics $dedup_metrics $deduped_bam
 
 
 # ******************************************
 # 4. Indel realigner
 # ******************************************
-#$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta  -t $nt -i $deduped_bam --algo Realigner -k $known_Mills_indels -k $known_1000G_indels $realigned_bam
+$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta  -t $nt -i $deduped_bam --algo Realigner -k $known_Mills_indels -k $known_1000G_indels $realigned_bam
 
 
 # ******************************************
@@ -113,4 +116,4 @@ printf "########################################################################
 ### TNscope calling
 # echo "$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam -q ${SampleName}.recal_data.table --algo TNscope --tumor_sample $sample --dbsnp $dbsnp ${SampleName}.b37.TNscope.vcf"
 #$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i $realigned_bam -q $recal_data --algo TNscope --tumor_sample $sample --dbsnp $dbsnp $vcf
-#$gatk --java-options "-Xmx40g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta
+$gatk --java-options "-Xmx40g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta
