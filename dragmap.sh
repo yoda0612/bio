@@ -12,14 +12,13 @@ make
 
 
 
-
-fastq1=/volume/cyvolume/fda/PanelA_LAB3_LIB4_R1.fastq.gz
-fastq2=/volume/cyvolume/fda/PanelA_LAB3_LIB4_R3.fastq.gz
-sam=/volume/cyvolume/fda/PanelA_LAB3_LIB4.dragmap.sam
-/root/DRAGMAP/build/release/dragen-os -r /volume/cyvolume/dragmap_index \
+i=5
+fastq1=/volume/cyvolume/seq2/SRR1307639${i}_1.fastq.gz
+fastq2=/volume/cyvolume/seq2/SRR1307639${i}_2.fastq.gz
+sam=/volume/cyvolume/seq2/SRR1307639${i}.dragmap.hg19.sam
+/root/DRAGMAP/build/release/dragen-os -r /volume/cyvolume/dragmap_index_hg19 \
  -1 $fastq1 \
  -2 $fastq2 \
  >  $sam
-
 
 scp PanelA_LAB3*.dragmap.sam yoda670612@t3-c4.nchc.org.tw://staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/

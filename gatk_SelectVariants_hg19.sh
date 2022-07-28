@@ -10,3 +10,15 @@ do
   echo "$gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval"
   $gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
 done
+
+for i in {6..8};
+do
+
+gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
+input_vcf=/staging/biology/yoda670612/seq2/SRR1307639${i}.dragmap.hg19.Mutect2.vcf
+output_vcf=/staging/biology/yoda670612/seq2/SRR1307639${i}.dragmap.hg19.Mutect2.selected.vcf
+fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+interval=/staging/biology/yoda670612/truth/CTR_hg19.interval_list
+echo "$gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval"
+$gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
+done

@@ -19,6 +19,7 @@ BED=/staging/biology/yoda670612/truth/CTR_hg19.bed
 BED37=/staging/biology/yoda670612/truth/CTR_hg19.b37.bed
 BEDPANELA=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/PanelA.b37.bed
 BEDPANELB=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel/PanelB.b37.bed
+BEDPANELX=/staging/biology/yoda670612/seq2/PanelX.bed
 
 GATK=/staging/reserve/paylong_ntu/AI_SHARE/software/GATK/GenomeAnalysisTK-3.6/GenomeAnalysisTK.jar
 PICARD=/opt/ohpc/Taiwania3/pkg/biology/Picard/picard_v2.26.0/picard.jar
@@ -38,7 +39,7 @@ A1_HG19_SD=/staging/reserve/paylong_ntu/AI_SHARE/reference/hg19.NC_012920/ucsc.h
 #cd ${FOLDER}
 ### To transform bed file to interval_list
 ### interval list for b37, g1k_v37_decoy
-java -jar ${PICARD} BedToIntervalList I=${BEDPANELB} O=/staging/biology/yoda670612/truth/PanelB.b37.interval_list SD=${B37_SD}
+java -jar ${PICARD} BedToIntervalList I=${BEDPANELX} O=/staging/biology/yoda670612/seq2/PanelX.bed.interval_list SD=${HG19_SD}
 
 #java -jar ${PICARD} BedToIntervalList I=${BED37} O=/staging/biology/yoda670612/truth/CTR_hg19.b37.interval_list SD=${B37_SD}
 ### interval list for A1 previous ucsc.hg19.NC_012920.fasta reference

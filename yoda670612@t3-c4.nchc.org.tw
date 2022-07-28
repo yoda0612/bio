@@ -21,12 +21,13 @@ platform="ILLUMINA"
 
 SENTIEON_INSTALL_DIR="/staging/reserve/paylong_ntu/AI_SHARE/software/Sentieon/sentieon-genomics-202112"
 gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
-hisat2=/work/yoda670612/hisat2-2.1.0/hisat2
-hisat2_build=/work/yoda670612/hisat2-2.1.0/hisat2-build
-ref=hg19
-aligner=hisat2
+bowtie2=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2
+bowtie2_build=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2-build
+SAMTOOLS=/opt/ohpc/Taiwania3/pkg/biology/SAMTOOLS/SAMTOOLS_v1.13/bin/samtools
+ref=bowtie2
+
 nt=40 #number of threads to use in computation
-hisat2_index=/staging/biology/yoda670612/hisat2_hg19_index/hisat2_hg19
+bw2_index=/staging/biology/yoda670612/bw2_hg19_index/bw2_hg19
 workdir=/staging/biology/yoda670612/seq2_bw2
 fastadir=/staging/biology/yoda670612
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
@@ -51,8 +52,8 @@ known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/
 
 
 #$bowtie2_build $fasta $bw2_index
-echo "$hisat2 -x $hisat2_index -1 $fastq_1 -2 $fastq_2 -S $sam"
-$hisat2 -p $nt --rg-id $group --rg "SM:$sample" --rg "PL:$platform" -x $hisat2_index -1 $fastq_1 -2 $fastq_2 -S $sam
+echo "$bowtie2 -x bw2_index -1 $fastq_1 -2 $fastq_2 -S $sam"
+$bowtie2 -p $nt --rg-id $group --rg "SM:$sample" --rg "PL:$platform" -x $bw2_index -1 $fastq_1 -2 $fastq_2 -S $sam
 
 #sort
 cat $sam | $SENTIEON_INSTALL_DIR/bin/sentieon util sort -r $fasta -o $sorted_bam -t $nt --sam2bam -i -

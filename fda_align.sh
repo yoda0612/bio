@@ -21,27 +21,28 @@ platform="ILLUMINA"
 aligner="dragmap"
 SENTIEON_INSTALL_DIR="/staging/reserve/paylong_ntu/AI_SHARE/software/Sentieon/sentieon-genomics-202112"
 gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
-
+ref="hg19"
 nt=40 #number of threads to use in computation
-workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel
-fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
+workdir=/staging/biology/yoda670612/seq2
+#fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/human_g1k_v37_decoy.fasta
+fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
 fastq_1=$workdir/${SampleName}_R1.fastq.gz
 fastq_2=$workdir/${SampleName}_R2.fastq.gz
-sam=$workdir/${SampleName}.${aligner}.sam
-sorted_bam=$workdir/${SampleName}.${aligner}.sorted.bam
-deduped_bam=$workdir/${SampleName}.${aligner}.deduped.bam
-score_info=$workdir/${SampleName}.${aligner}.score.txt
-dedup_metrics=$workdir/${SampleName}.${aligner}.dedup_metrics.txt
-realigned_bam=$workdir/${SampleName}.${aligner}.realigned.bam
-recal_data=$workdir/${SampleName}.${aligner}.recal_data.table
-vcf=$workdir/${SampleName}.${aligner}.b37.TNscope.vcf
-vcf_mu2=$workdir/${SampleName}.${aligner}.b37.Mutect2.vcf
+sam=$workdir/${SampleName}.${aligner}.${ref}.sam
+sorted_bam=$workdir/${SampleName}.${aligner}.${ref}.sorted.bam
+deduped_bam=$workdir/${SampleName}.${aligner}.${ref}.deduped.bam
+score_info=$workdir/${SampleName}.${aligner}.${ref}.score.txt
+dedup_metrics=$workdir/${SampleName}.${aligner}.${ref}.dedup_metrics.txt
+realigned_bam=$workdir/${SampleName}.${aligner}.${ref}.realigned.bam
+recal_data=$workdir/${SampleName}.${aligner}.${ref}.recal_data.table
+vcf=$workdir/${SampleName}.${aligner}.${ref}.TNscope.vcf
+vcf_mu2=$workdir/${SampleName}.${aligner}.${ref}.Mutect2.vcf
 
 # Update with the location of the reference data files
 
-dbsnp="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/dbsnp_138.b37.vcf"
-known_Mills_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/Mills_and_1000G_gold_standard.indels.b37.vcf"
-known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/b37/1000G_phase1.indels.b37.vcf"
+dbsnp="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/dbsnp_138.hg19.vcf"
+known_Mills_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19//Mills_and_1000G_gold_standard.indels.hg19.sites.vcf"
+known_1000G_indels="/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/1000G_phase1.indels.hg19.sites.vcf"
 
 printf "#############################################################################\n"
 printf "###                  Work started:   $(date +%Y-%m-%d:%H:%M:%S)           ###\n"
@@ -116,4 +117,4 @@ $SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta  -t $nt -i $deduped_bam --al
 ### TNscope calling
 # echo "$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i ${SampleName}.realigned.bam -q ${SampleName}.recal_data.table --algo TNscope --tumor_sample $sample --dbsnp $dbsnp ${SampleName}.b37.TNscope.vcf"
 #$SENTIEON_INSTALL_DIR/bin/sentieon driver -r $fasta -t $nt -i $realigned_bam -q $recal_data --algo TNscope --tumor_sample $sample --dbsnp $dbsnp $vcf
-$gatk --java-options "-Xmx40g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta
+$gatk --java-options "-Xmx80g" Mutect2 -I $realigned_bam  -O $vcf_mu2 -R $fasta

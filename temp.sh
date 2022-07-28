@@ -56,10 +56,21 @@ runDir=$workdir/strelka
 
 
 #懶惰用
-job_name="hu2sk"
+job_name="hi2_index"
 p=ngs192G
 c=56
 mem=184G
+fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+bowtie2_build=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2-build
+bw2_index=/staging/biology/yoda670612/bw2_hg19_index/bw2_hg19
+hisat2_build=/work/yoda670612/hisat2-2.1.0/hisat2-build
+hisat2_index=/staging/biology/yoda670612/hisat2_hg19_index/hisat2_hg19
+
 sbatch -A MST109178 -J $job_name  -p $p -c $c --mem=$mem -o %j.out -e %j.log \
 --mail-user=cycheng1978@g.ntu.edu.tw --mail-type=FAIL,END \
---wrap="/staging/biology/yoda670612/plan/strelka/hisat2/runWorkflow.py -m local -j 100 -g 180"
+--wrap="$hisat2_build $fasta $hisat2_index"
+
+job_name="bw2_index"
+sbatch -A MST109178 -J $job_name  -p $p -c $c --mem=$mem -o %j.out -e %j.log \
+--mail-user=cycheng1978@g.ntu.edu.tw --mail-type=FAIL,END \
+--wrap="$bowtie2_build $fasta $bw2_index"
