@@ -1,3 +1,7 @@
+
+ssh yoda670612@140.110.141.212
+yoda670612/yoda670612@NTU
+
 Alinger=dragen
 SampleName=SRR13076390
 somatic_ref_dir=/staging/yoda670612/ref

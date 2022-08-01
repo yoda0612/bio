@@ -65,6 +65,8 @@ bowtie2_build=/opt/ohpc/Taiwania3/pkg/biology/BOWTIE/bowtie2_v2.4.2/bowtie2-buil
 bw2_index=/staging/biology/yoda670612/bw2_hg19_index/bw2_hg19
 hisat2_build=/work/yoda670612/hisat2-2.1.0/hisat2-build
 hisat2_index=/staging/biology/yoda670612/hisat2_hg19_index/hisat2_hg19
+mkdir /staging/biology/yoda670612/bw2_hg19_index/
+mkdir /staging/biology/yoda670612/hisat2_hg19_index/
 
 sbatch -A MST109178 -J $job_name  -p $p -c $c --mem=$mem -o %j.out -e %j.log \
 --mail-user=cycheng1978@g.ntu.edu.tw --mail-type=FAIL,END \

@@ -13,7 +13,7 @@ workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel
 
 for i in {0..8};
 do
-    sbatch -J "bw2_${i}" ~/bowtie2_hg19.sh SRR1307639${i}
+    sbatch -J "bwa_${i}" ~/bwa_hg19.sh SRR1307639${i}
 done
 
 for lab in {1..3};
