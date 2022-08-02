@@ -1,25 +1,64 @@
 
 ssh yoda670612@140.110.141.212
 yoda670612/yoda670612@NTU
+for i in {1..8};
+do
+  Alinger=dragen
+  SampleName=SRR1307639${i}
+  ref=hg19
+  somatic_ref_dir=/staging/yoda670612/ref_hg19
+  somatic_output_dir=/staging/yoda670612/output
+  somatic_output_prefix=${SampleName}.${Alinger}.${ref}
+  fasta=${somatic_ref_dir}/human_g1k_v37_decoy.fasta
+  fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq.gz
+  fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq.gz
+  bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.realigned.bam
+  somatic_RGSM="SM_"${SampleName}
+  somatic_RGID="GP_"${SampleName}
 
-Alinger=dragen
-SampleName=SRR13076390
-somatic_ref_dir=/staging/yoda670612/ref
-somatic_output_dir=/staging/yoda670612/output/${Alinger}
-somatic_output_prefix=${SampleName}.${Alinger}
+  dragen -r ${somatic_ref_dir} \
+  --output-dir ${somatic_output_dir} \
+  --output-file-prefix ${somatic_output_prefix} \
+  --output-format BAM \
+  --enable-map-align-output true \
+  --vc-emit-ref-confidence GVCF \
+  --vc-enable-vcf-output true \
+  --repeat-genotype-enable true \
+  --enable-duplicate-marking true \
+  --remove-duplicates true \
+  --tumor-fastq1 ${fastq_1}  \
+  --tumor-fastq2 ${fastq_2} \
+  --RGID-tumor ${somatic_RGID} \
+  --RGSM-tumor ${somatic_RGSM} \
+  --enable-variant-caller true \
+  --enable-map-align true
+done
+
+
+Alinger=bwa
+SampleName=SRR1307639${i}
+ref=hg19
+somatic_ref_dir=/staging/yoda670612/ref_hg19
+somatic_output_dir=/staging/yoda670612/output
+somatic_output_prefix=${SampleName}.${Alinger}.${ref}
 fasta=${somatic_ref_dir}/human_g1k_v37_decoy.fasta
-fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq
-fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq
-bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.realigned.bam
+fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq.gz
+fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq.gz
+bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.${ref}.realigned.bam
 somatic_RGSM="SM_"${SampleName}
 somatic_RGID="GP_"${SampleName}
 mkdir $somatic_output_dir
 
-nohup dragen -r ${somatic_ref_dir} \
+
+nohup dragen -f \
+-r ${somatic_ref_dir} \
 --output-dir ${somatic_output_dir} \
 --output-file-prefix ${somatic_output_prefix} \
--b $bam \
---enable-variant-caller true  &
+--tumor-bam-input  $bam \
+--enable-variant-caller true  \
+--enable-map-align false \
+--prepend-filename-to-rgid true
+
 
 
 nohup dragen -r ${somatic_ref_dir} \

@@ -11,9 +11,9 @@
 
 workdir=/staging/reserve/paylong_ntu/AI_SHARE/Pipeline/FDA_oncopanel
 
-for i in {0..8};
+for i in {1..8};
 do
-    sbatch -J "bwa_${i}" ~/bwa_hg19.sh SRR1307639${i}
+    sbatch -J "dg_${i}" ~/dragen_hg19.sh SRR1307639${i}
 done
 
 for lab in {1..3};
@@ -45,11 +45,28 @@ do
   done
 done
 
-for i in {6..8};
+for i in {0..8};
 do
   gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
-  input_vcf=/staging/biology/yoda670612/seq2/SRR1307639${i}.dragmap.hg19.Mutect2.selected.vcfnormed.vcf
-  output_vcf=/staging/biology/yoda670612/seq2/SRR1307639${i}.dragmap.hg19.Mutect2.selected.vcfnormed.lined.vcf
+  folder=seq2_dragmap
+  aligner=dragmap
+  caller="TNscope"
+  input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcf
+  output_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.vcf
+  fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+  $gatk LeftAlignAndTrimVariants \
+  -R $fasta \
+    -V $input_vcf \
+    -O $output_vcf
+done
+
+for i in {0..8};
+do
+  folder=seq2_dragmap
+  aligner=dragmap
+  gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
+  input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.Mutect2.vcfnormed.vcf
+  output_vcf=//staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.Mutect2.vcfnormed.lined.vcf
   python ~/fix_mutect2_vcf3.py $input_vcf $output_vcf
   $gatk IndexFeatureFile -I $output_vcf
 done
@@ -79,3 +96,14 @@ done
 
 $gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
 $gatk IndexFeatureFile -I $input_vcf
+
+
+for i in {0..8};
+do
+  aligner=dragmap
+  folder=seq2_dragmap
+  caller=Mutect2.vcfnormed.lined
+  input_vcf=Mutect2
+
+  sbatch -J "SRR1307639${i}" ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
+done
