@@ -11,16 +11,16 @@
 fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
 python=/work/yoda670612/anaconda2/bin/python2
 hap=/home/yoda670612/hap.py-build/bin/hap.py
-truth_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.vcf.gz
+#truth_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.vcf.gz
+truth_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.vcfnormed.selected.vcf
 bed=/staging/biology/yoda670612/truth/CTR_hg19.bed
 SampleName=$1
 aligner=$2
 folder=$3
 caller=$4
-input_vcf=$5
 
 
-input_vcf=/staging/biology/yoda670612/${folder}/${SampleName}.${aligner}.hg19.${caller}.vcf
+input_vcf=/staging/biology/yoda670612/${folder}/${SampleName}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
 output_prefix=/staging/biology/yoda670612/results/${SampleName}.${aligner}.hg19.${caller}
 
 

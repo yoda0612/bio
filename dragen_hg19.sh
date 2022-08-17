@@ -37,9 +37,9 @@ deduped_bam=$workdir/${SampleName}.${aligner}.${ref}.deduped.bam
 score_info=$workdir/${SampleName}.${aligner}.${ref}.score.txt
 dedup_metrics=$workdir/${SampleName}.${aligner}.${ref}.dedup_metrics.txt
 realigned_bam=$workdir/${SampleName}.${aligner}.${ref}_tumor.bam
-recal_data=$workdir/${SampleName}.${aligner}.${ref}.recal_data.table
-vcf=$workdir/${SampleName}.${aligner}.${ref}.TNscope.vcf
-vcf_mu2=$workdir/${SampleName}.${aligner}.${ref}.Mutect2.vcf
+recal_data=$workdir/${SampleName}.${aligner}.${ref}.recal_data.test.table
+vcf=$workdir/${SampleName}.${aligner}.${ref}.TNscope.test.vcf
+vcf_mu2=$workdir/${SampleName}.${aligner}.${ref}.Mutect2.test.vcf
 
 # Update with the location of the reference data files
 

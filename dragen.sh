@@ -34,20 +34,44 @@ do
   --enable-map-align true
 done
 
+for i in {1..8};
+do
+  i=0
+  Alinger=hisat2
+  SampleName=SRR1307639${i}
+  ref=hg19
+  somatic_ref_dir=/staging/yoda670612/ref_hg19
+  somatic_output_dir=/staging/yoda670612/output
+  somatic_output_prefix=${SampleName}.${Alinger}.${ref}.dragen
+  fasta=${somatic_ref_dir}/human_g1k_v37_decoy.fasta
+  fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq.gz
+  fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq.gz
+  bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.${ref}.realigned.bam
+  somatic_RGSM="SM_"${SampleName}
+  somatic_RGID="GP_"${SampleName}
+  dragen -f \
+  -r ${somatic_ref_dir} \
+  --output-dir ${somatic_output_dir} \
+  --output-file-prefix ${somatic_output_prefix} \
+  --tumor-bam-input  $bam \
+  --enable-variant-caller true  \
+  --enable-map-align false \
+  --prepend-filename-to-rgid true
+done
 
+i=0
 Alinger=bwa
 SampleName=SRR1307639${i}
 ref=hg19
 somatic_ref_dir=/staging/yoda670612/ref_hg19
 somatic_output_dir=/staging/yoda670612/output
-somatic_output_prefix=${SampleName}.${Alinger}.${ref}
+somatic_output_prefix=${SampleName}.${Alinger}.${ref}.dragen
 fasta=${somatic_ref_dir}/human_g1k_v37_decoy.fasta
 fastq_1=/staging/yoda670612/fastq/${SampleName}_1.fastq.gz
 fastq_2=/staging/yoda670612/fastq/${SampleName}_2.fastq.gz
 bam=/staging/yoda670612/bam/${SampleName}.${Alinger}.${ref}.realigned.bam
 somatic_RGSM="SM_"${SampleName}
 somatic_RGID="GP_"${SampleName}
-mkdir $somatic_output_dir
 
 
 nohup dragen -f \

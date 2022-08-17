@@ -44,31 +44,50 @@ do
        $gatk IndexFeatureFile -I $output_vcf
   done
 done
-
+#VCF Normalize
 for i in {0..8};
 do
   gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
-  folder=seq2_dragmap
-  aligner=dragmap
-  caller="TNscope"
+  folder=seq2_dragen
+  aligner=dragen
+  caller="Mutect2"
+  input_vcf_gz=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.hard-filtered.vcf.gz
   input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcf
   output_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.vcf
   fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+
+  zcat $input_vcf_gz > $input_vcf
+  $gatk IndexFeatureFile -I $input_vcf
   $gatk LeftAlignAndTrimVariants \
   -R $fasta \
     -V $input_vcf \
     -O $output_vcf
 done
 
+#Mutect2 fix line problem
 for i in {0..8};
 do
-  folder=seq2_dragmap
-  aligner=dragmap
+  folder=seq2_dragen
+  aligner=dragen
   gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
   input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.Mutect2.vcfnormed.vcf
-  output_vcf=//staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.Mutect2.vcfnormed.lined.vcf
+  output_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.Mutect2.vcfnormed.lined.vcf
   python ~/fix_mutect2_vcf3.py $input_vcf $output_vcf
   $gatk IndexFeatureFile -I $output_vcf
+done
+
+
+for i in {0..8};
+do
+  folder=seq2_bwa
+  aligner=bwa
+  caller=dragen
+  gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
+  input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.vcf
+  output_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+  interval=/staging/biology/yoda670612/truth/CTR_hg19.interval_list
+  fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+  $gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
 done
 
 
@@ -98,12 +117,23 @@ $gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
 $gatk IndexFeatureFile -I $input_vcf
 
 
+gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
+input_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.vcfnormed.vcf
+output_vcf=/staging/biology/yoda670612/truth/KnownPositives_hg19.vcfnormed.selected.vcf
+interval=/staging/biology/yoda670612/truth/CTR_hg19.interval_list
+fasta=/staging/reserve/paylong_ntu/AI_SHARE/reference/GATK_bundle/2.8/hg19/ucsc.hg19.fasta
+$gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
+
+p=ngs12G
+c=3
+mem=12G
 for i in {0..8};
 do
-  aligner=dragmap
-  folder=seq2_dragmap
-  caller=Mutect2.vcfnormed.lined
-  input_vcf=Mutect2
+  aligner=hisat2
+  folder=seq2_hisat2
+  caller=TNscope
+  sbatch -J "h_hi2_tn_${i}" -p $p -c $c --mem=$mem ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
 
-  sbatch -J "SRR1307639${i}" ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
+  caller=Mutect2
+  sbatch -J "h_hi2_mu_${i}" -p $p -c $c --mem=$mem ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
 done
