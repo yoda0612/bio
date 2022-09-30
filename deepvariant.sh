@@ -21,3 +21,4 @@ singularity run --nv -B /staging/biology/yoda670612/deepvariant_test:/staging/bi
 --reads=/staging/biology/yoda670612/deepvariant_test/SRR1307639${i}.${alinger}.hg19.realigned.bam \
 --output_vcf=/staging/biology/yoda670612/deepvariant_test/SRR1307639${i}.${alinger}.hg19.deepvariant.vcf.gz \
 --output_gvcf=/staging/biology/yoda670612/deepvariant_test/SRR1307639${i}.${alinger}.hg19.deepvariant.vcf.g.vcf.gz \
+--num_shards=4
