@@ -51,8 +51,8 @@ done
 #Mutect2 and deepvariant fix line problem
 for i in {0..8};
 do
-  folder=seq2_bwa
-  aligner=bwa
+  folder=seq2_dragmap
+  aligner=dragmap
   caller=deepvariant
   gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
   input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.vcf
@@ -64,8 +64,8 @@ done
 #SelectVariants
 for i in {0..8};
 do
-  folder=seq2_bwa
-  aligner=bwa
+  folder=seq2_dragmap
+  aligner=dragmap
   caller=deepvariant
   gatk=/opt/ohpc/Taiwania3/pkg/biology/GATK/gatk_v4.2.3.0/gatk
   input_vcf=/staging/biology/yoda670612/${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.lined.vcf
@@ -112,13 +112,59 @@ $gatk SelectVariants -V $input_vcf -O $output_vcf -R $fasta -L $interval
 p=ngs12G
 c=3
 mem=12G
+caller=TNscope
 for i in {0..8};
 do
+  # aligner=bwa
+  # folder=seq2_bwa
+  # sbatch -J "ann_bw_${i}" -p $p -c $c --mem=$mem ~/run_annotation_hg19.sh SRR1307639${i} ${aligner} ${caller} ${folder}
+
+  aligner=bowtie2
+  folder=seq2_bw2
+  sbatch -J "ann_bw_${i}" -p $p -c $c --mem=$mem ~/run_annotation_hg19.sh SRR1307639${i} ${aligner} ${caller} ${folder}
+
+  aligner=dragen
+  folder=seq2_dragen
+  sbatch -J "ann_dr_${i}" -p $p -c $c --mem=$mem ~/run_annotation_hg19.sh SRR1307639${i} ${aligner} ${caller} ${folder}
+
   aligner=dragmap
   folder=seq2_dragmap
-  # caller=TNscope
-  # sbatch -J "h_hi2_tn_${i}" -p $p -c $c --mem=$mem ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
+  sbatch -J "ann_dg_${i}" -p $p -c $c --mem=$mem ~/run_annotation_hg19.sh SRR1307639${i} ${aligner} ${caller} ${folder}
 
-  caller=deepvariant
-  sbatch -J "h_dg_dp_${i}" -p $p -c $c --mem=$mem ~/hap.sh SRR1307639${i} ${aligner} ${folder} ${caller} ${input_vcf}
+  aligner=hisat2
+  folder=seq2_hisat2
+  sbatch -J "ann_h2_${i}" -p $p -c $c --mem=$mem ~/run_annotation_hg19.sh SRR1307639${i} ${aligner} ${caller} ${folder}
+
+done
+
+
+caller=TNscope
+
+for i in {0..8};
+do
+  # aligner=bwa
+  # folder=seq2_bwa
+  # mv ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf
+  # sed '/bnd/d' ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf > ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+
+  aligner=bowtie2
+  folder=seq2_bw2
+  mv ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf
+  sed '/bnd/d' ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf > ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+
+  aligner=dragen
+  folder=seq2_dragen
+  mv ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf
+  sed '/bnd/d' ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf > ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+
+  aligner=dragmap
+  folder=seq2_dragmap
+  mv ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf
+  sed '/bnd/d' ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf > ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+
+  aligner=hisat2
+  folder=seq2_hisat2
+  mv ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf
+  sed '/bnd/d' ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected_bnd.vcf > ${folder}/SRR1307639${i}.${aligner}.hg19.${caller}.vcfnormed.selected.vcf
+
 done
