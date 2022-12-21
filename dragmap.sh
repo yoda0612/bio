@@ -1,3 +1,7 @@
+網址：
+https://github.com/Illumina/DRAGMAP
+
+建構步驟：
 apt update &&
 apt -y install build-essential &&
 apt-get -y install libboost-all-dev &&
@@ -8,14 +12,16 @@ git clone https://github.com/Illumina/DRAGMAP.git &&
 cd DRAGMAP &&
 make
 
+
+建立index：
 ./dragen-os --build-hash-table true --ht-reference /volume/cyvolume/somaticseq/human_g1k_v37_decoy.fasta  --output-directory /volume/cyvolume/dragmap_index
 
 
 
-i=5
-fastq1=/volume/cyvolume/seq2/SRR1307639${i}_1.fastq.gz
-fastq2=/volume/cyvolume/seq2/SRR1307639${i}_2.fastq.gz
-sam=/volume/cyvolume/seq2/SRR1307639${i}.dragmap.hg19.sam
+進行alignment
+fastq1=/volume/cyvolume/seq2/SRR1307639_1.fastq.gz
+fastq2=/volume/cyvolume/seq2/SRR1307639_2.fastq.gz
+sam=/volume/cyvolume/seq2/SRR1307639.dragmap.hg19.sam
 /root/DRAGMAP/build/release/dragen-os -r /volume/cyvolume/dragmap_index_hg19 \
  -1 $fastq1 \
  -2 $fastq2 \
